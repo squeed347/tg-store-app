@@ -13,7 +13,7 @@ function App() {
 
   // 2. Загрузка данных
   useEffect(() => {
-    axios.get('/products.json').then(res => {
+    axios.get('/tg-store-app/products.json').then(res => {
       setProducts(res.data)
       setLoading(false)
     }).catch(err => {
