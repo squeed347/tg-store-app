@@ -8,7 +8,10 @@ app = FastAPI(title="TG Store API")
 # CORS для фронтенда
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[
+        "https://squeed347.github.io",  # ← GitHub Pages
+        "https://squeed347.github.io/tg-store-app"  # ← Полный URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
