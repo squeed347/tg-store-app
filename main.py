@@ -3,41 +3,39 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
-app = FastAPI(title="Мое первое API")  # ← Эта строка ОБЯЗАТЕЛЬНА
+app = FastAPI(title="TG Store API")
 
+# CORS для фронтенда
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World от FastAPI!"}
-
-@app.get("/api/test")
-async def test_api():
-    return {
-        "status": "success",
-        "data": {"version": "1.0", "timestamp": "2026-02-03"}
-    }
 
 class Product(BaseModel):
     id: int
     name: str
     price: float
     description: str
-    image: str = ""
     category: str
 
+# РЕАЛЬНОЕ МЕНЮ 🍔
 products_db = [
-    Product(id=1, name="🍔 Бургер классический", price=350, description="Сочная котлета, сыр, овощи", category="burgers"),
-    Product(id=2, name="🍕 Маргарита", price=450, description="Томат, моцарелла, базилик", category="pizza"),
-    Product(id=3, name="🥤 Кола 0.5л", price=150, description="Газировка", category="drinks"),
-    # Добавьте свои блюда!
+    Product(id=1, name="🍔 Бургер Короли", price=350, description="Сочная говядина", category="burgers", emoji="🍔", favorite=False),
+    Product(id=2, name="🥞 Блины с мёдом", price=250, description="Тёплые, с золотистой корочкой", category="breakfast", emoji="🥞", favorite=False),
+    Product(id=3, name="🍲 Борщ", price=320, description="Красный, наваристый", category="lunch", emoji="🍲", favorite=True),
+    # ... остальные блюда с категориями: "dinner", "burgers", "pizza"
 ]
+
+@app.get("/")
+async def root():
+    return {"message": "🍕 TG Store API работает!"}
+
+@app.get("/api/test")
+async def test_api():
+    return {"status": "success", "data": {"version": "1.0"}}
 
 @app.get("/api/products", response_model=List[Product])
 async def get_products():
@@ -46,3 +44,13 @@ async def get_products():
 @app.get("/api/products/{category}")
 async def get_products_by_category(category: str):
     return [p for p in products_db if p.category == category]
+
+@app.get("/api/categories")
+async def get_categories():
+    return [
+        {"id": "favorites", "name": "Избранное ❤️", "emoji": "❤️"},
+        {"id": "all", "name": "Все", "emoji": "🍽️"},
+        {"id": "breakfast", "name": "Завтрак ☀️", "emoji": "☀️"},
+        {"id": "lunch", "name": "Обед 🍲", "emoji": "🍲"},
+        {"id": "dinner", "name": "Ужин 🌙", "emoji": "🌙"},
+    ]
